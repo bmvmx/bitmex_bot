@@ -3,9 +3,8 @@
 
 class MovingAverage {
 
-  private $PERIODI = 200;
-  private $TIMEFRAME = "1h";
-  private $bitmex;
+  private $PERIODI;
+  private $CANDLES;
 
   public function isPositive(){
     $resMedia = $this->getLastTwoValues();
@@ -17,44 +16,41 @@ class MovingAverage {
   
 
   public function getLastValue() {
-
     
-    $candele = $this->bitmex->getCandles($this->TIMEFRAME, $this->PERIODI);
+    $candele = $this->CANDLES;
 
     $somma = 0; 
-    $numCandele = count($candele);
 
-    for($i=0; $i<$numCandele; $i++){
+    for($i=0; $i<($this->PERIODI); $i++){
       $somma += $candele[$i]['close'];
 
 
     }
 
-    return floatval($somma/$numCandele);
+    return floatval($somma/$this->PERIODI);
 
   }
 
   public function getLastTwoValues() {
 
-    $candele = $this->bitmex->getCandles($this->TIMEFRAME, (($this->PERIODI)+1));
+    $candele = $this->CANDLES;
 
     $somma = 0; 
-    $numCandele = count($candele);
 
-    for($i=0; $i<($numCandele-1); $i++){
+    for($i=0; $i<($this->PERIODI); $i++){
       $somma += $candele[$i]['close'];
     }   
 
-    $media1 = $somma/($numCandele-1);
+    $media1 = $somma/(($this->PERIODI));
 
 
     $somma = 0; 
-    for($i=1; $i<$numCandele; $i++){
+    for($i=1; $i<(($this->PERIODI)+1); $i++){
       $somma += $candele[$i]['close'];
 
     }
 
-    $media2 = $somma/($numCandele-1);
+    $media2 = $somma/(($this->PERIODI));
     
 
     $stack = array(floatval($media1), floatval($media2));
@@ -62,9 +58,11 @@ class MovingAverage {
 
   }
 
-  public function __construct($bitmex) {
+  public function __construct($periodi, $candles) {
 
-    $this->bitmex = $bitmex;
+    $this->PERIODI = $periodi;
+    $this->CANDLES = $candles;
+
 
   }
  
